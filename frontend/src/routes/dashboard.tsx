@@ -344,7 +344,13 @@ function DashboardPage() {
           table: "predictions",
           filter: `user_id=eq.${userId}`,
         },
-        () => fetchPredictions(userId)
+        () => {
+          supabase.auth.getSession().then(({ data: { session } }) => {
+            if (session) {
+              fetchDashboardData(session.access_token);
+            }
+          });
+        }
       )
       .on(
         "postgres_changes",
