@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: noctalink_backend
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=production
+      - MOCK_ML=false
+      # Supabase config will be pulled from local .env or injected via CI/CD
+    env_file:
+      - ./backend/.env
+    restart: unless-stopped
+    networks:
+      - noctalink_net
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: noctalink_frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - noctalink_net
+
+networks:
+  noctalink_net:
+    driver: bridge
