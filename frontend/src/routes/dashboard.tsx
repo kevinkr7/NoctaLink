@@ -189,7 +189,8 @@ function DashboardPage() {
     setProfileLoading(true);
     setPredictionsLoading(true);
     try {
-      const res = await fetch("https://noctalink-api-181953188443.us-central1.run.app/api/cognitive-twin/dashboard", {
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+      const res = await fetch(`${API_BASE_URL}/api/cognitive-twin/dashboard`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (!res.ok) throw new Error("Failed to fetch dashboard data");
@@ -224,30 +225,33 @@ function DashboardPage() {
       // All sleep sessions for trend
       const { data: allSleep } = await supabase
         .from("sleep_sessions")
-        .select("sleep_date, sleep_quality_score")
+        .select("start_time, quality_score")
         .eq("user_id", uid)
-        .order("sleep_date", { ascending: false })
+        .order("start_time", { ascending: false })
         .limit(30);
 
       if (allSleep) {
-        setAllSleepSessions([...allSleep].reverse());
+        setAllSleepSessions([...allSleep].reverse().map(s => ({
+          sleep_date: s.start_time,
+          sleep_quality_score: s.quality_score
+        })));
       }
 
       // Latest session with EEG
       const { data: latestSleep } = await supabase
         .from("sleep_sessions")
-        .select("id, sleep_date, sleep_quality_score, sleep_duration, created_at")
+        .select("id, start_time, quality_score, duration_minutes, created_at")
         .eq("user_id", uid)
-        .order("sleep_date", { ascending: false })
+        .order("start_time", { ascending: false })
         .limit(1)
         .maybeSingle();
 
       if (latestSleep) {
         setLatestSleepSession({
           id: latestSleep.id,
-          sleep_date: latestSleep.sleep_date,
-          sleep_quality_score: latestSleep.sleep_quality_score,
-          sleep_duration: latestSleep.sleep_duration,
+          sleep_date: latestSleep.start_time,
+          sleep_quality_score: latestSleep.quality_score,
+          sleep_duration: latestSleep.duration_minutes ? latestSleep.duration_minutes / 60 : 0,
           created_at: latestSleep.created_at,
         });
 
@@ -257,7 +261,7 @@ function DashboardPage() {
           .select(
             "delta_power, theta_power, alpha_power, beta_power, rem_percentage, deep_sleep_percentage, signal_quality"
           )
-          .eq("sleep_session_id", latestSleep.id)
+          .eq("session_id", latestSleep.id)
           .maybeSingle();
 
         if (eeg) {
@@ -367,7 +371,7 @@ function DashboardPage() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [userId, fetchPredictions, fetchActiveSession]);
+  }, [userId, fetchDashboardData, fetchActiveSession]);
 
   // ── Derived values ────────────────────────────────────────────────────────────
   const cognitiveLoad = latestPrediction?.cognitive_readiness ?? null;

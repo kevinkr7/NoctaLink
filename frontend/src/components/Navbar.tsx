@@ -175,9 +175,9 @@ export function Navbar() {
           <Link
             to="/"
             aria-label="Home"
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-foreground/80 transition hover:bg-white/5 hover:text-foreground"
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 overflow-hidden transition hover:bg-white/5"
           >
-            <Home className="h-4 w-4" />
+            <img src="/noctalink.png" alt="NoctaLink Logo" className="h-6 w-6 object-contain" />
           </Link>
 
           <div className="hidden items-center gap-7 text-sm text-muted-foreground md:flex">

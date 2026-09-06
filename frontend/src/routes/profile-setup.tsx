@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { supabase } from "@/utils/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
 import { StarField } from "@/components/StarField";
@@ -12,6 +12,25 @@ export const Route = createFileRoute("/profile-setup")({
 function ProfileSetupPage() {
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Auth guard
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) {
+        navigate({ to: "/login" });
+      }
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!session) {
+        navigate({ to: "/login" });
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -99,7 +118,8 @@ function ProfileSetupPage() {
       
       if (!token) throw new Error("Authentication token not found.");
 
-      const response = await fetch("https://noctalink-api-181953188443.us-central1.run.app/api/profile", {
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+      const response = await fetch(`${API_BASE_URL}/api/profile`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

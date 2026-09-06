@@ -101,6 +101,25 @@ const SECTIONS = [
 function OnboardingPage() {
   const navigate = useNavigate();
   const [currentSection, setCurrentSection] = useState(0);
+
+  // Auth guard
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) {
+        navigate({ to: "/login" });
+      }
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!session) {
+        navigate({ to: "/login" });
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
   const [answers, setAnswers] = useState<Answers>({
     medical_conditions: [],
     typical_bedtime: "",
@@ -181,7 +200,8 @@ function OnboardingPage() {
       
       if (!token) throw new Error("Authentication token not found.");
 
-      const response = await fetch("https://noctalink-api-181953188443.us-central1.run.app/api/onboarding/answers", {
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+      const response = await fetch(`${API_BASE_URL}/api/onboarding/answers`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -196,7 +216,7 @@ function OnboardingPage() {
       }
 
       // Mark cognitive twin initialization as complete in the backend API
-      const completeResponse = await fetch("https://noctalink-api-181953188443.us-central1.run.app/api/onboarding/complete", {
+      const completeResponse = await fetch(`${API_BASE_URL}/api/onboarding/complete`, {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`

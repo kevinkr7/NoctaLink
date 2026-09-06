@@ -71,7 +71,7 @@ const STATE_CONFIG: Record<
 
 function LiveBrainModel({ loadState }: { loadState: LoadState }) {
   const { scene } = useGLTF(brainHologramUrl);
-  const modelRef = useThreeRef<THREE.Group>(null);
+  const modelRef = useRef<THREE.Group>(null);
   const config = STATE_CONFIG[loadState];
 
   useFrame((state, delta) => {
@@ -144,20 +144,14 @@ export function CognitiveTwinCore({
 
         <div className="relative z-10">
           <h3 className="font-display text-lg font-semibold text-white/70">
-            Twin Not Calibrated
+            Awaiting Data
           </h3>
           <p className="mt-2 text-sm text-muted-foreground max-w-[220px]">
-            Complete onboarding to initialize your cognitive digital twin.
+            Please connect your Nocta wearable head piece to begin monitoring.
           </p>
         </div>
 
-        <Link
-          to="/onboarding"
-          className="relative z-10 rounded-xl border border-white/15 bg-white/5 px-6 py-2.5 text-sm font-medium text-foreground transition hover:border-[var(--violet)] hover:bg-[color-mix(in_oklab,var(--violet)_18%,transparent)]"
-        >
-          Start Calibration
-        </Link>
-      </div>
+        </div>
     );
   }
 

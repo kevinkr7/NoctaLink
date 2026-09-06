@@ -37,19 +37,6 @@ def get_dashboard_data(current_user: CurrentUser = Depends(get_current_user)):
         },
         "twin_status": twin_status,
         "current_state": twin,
-        # Returning mock history to satisfy frontend charts while backend generates real history over time
-        "predictions_history": [
-            {
-                "prediction_date": "2026-08-28T10:00:00Z",
-                "cognitive_readiness": twin.get("cognitive_readiness", 80),
-                "fatigue_score": twin.get("fatigue_score", 20),
-                "attention_score": twin.get("attention_score", 85)
-            },
-            {
-                "prediction_date": "2026-08-27T10:00:00Z",
-                "cognitive_readiness": 75,
-                "fatigue_score": 25,
-                "attention_score": 80
-            }
-        ]
+        # Return empty history when there are no real predictions
+        "predictions_history": []
     }

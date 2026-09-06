@@ -17,7 +17,7 @@ function getLoadBand(score: number | null): {
       label: "No Data",
       color: "#6b7280",
       trackColor: "rgba(107,114,128,0.15)",
-      description: "No cognitive load data recorded yet.",
+      description: "No cognitive load data recorded yet. Please connect your Nocta wearable head piece to begin monitoring.",
     };
   }
   if (score <= 35) {
