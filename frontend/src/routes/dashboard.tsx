@@ -189,7 +189,7 @@ function DashboardPage() {
     setProfileLoading(true);
     setPredictionsLoading(true);
     try {
-      const res = await fetch("http://localhost:8000/api/cognitive-twin/dashboard", {
+      const res = await fetch("https://noctalink-api-181953188443.us-central1.run.app/api/cognitive-twin/dashboard", {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (!res.ok) throw new Error("Failed to fetch dashboard data");

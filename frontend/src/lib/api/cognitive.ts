@@ -1,6 +1,6 @@
 import { supabase } from '@/utils/supabase/client'
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://noctalink-api-181953188443.us-central1.run.app'
 
 async function getAuthHeaders() {
   const { data: { session } } = await supabase.auth.getSession()

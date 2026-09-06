@@ -181,7 +181,7 @@ function OnboardingPage() {
       
       if (!token) throw new Error("Authentication token not found.");
 
-      const response = await fetch("http://localhost:8000/api/onboarding/answers", {
+      const response = await fetch("https://noctalink-api-181953188443.us-central1.run.app/api/onboarding/answers", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -196,7 +196,7 @@ function OnboardingPage() {
       }
 
       // Mark cognitive twin initialization as complete in the backend API
-      const completeResponse = await fetch("http://localhost:8000/api/onboarding/complete", {
+      const completeResponse = await fetch("https://noctalink-api-181953188443.us-central1.run.app/api/onboarding/complete", {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`

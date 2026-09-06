@@ -99,7 +99,7 @@ function ProfileSetupPage() {
       
       if (!token) throw new Error("Authentication token not found.");
 
-      const response = await fetch("http://localhost:8000/api/profile", {
+      const response = await fetch("https://noctalink-api-181953188443.us-central1.run.app/api/profile", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
